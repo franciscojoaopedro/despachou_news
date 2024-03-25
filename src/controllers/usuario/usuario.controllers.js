@@ -19,7 +19,7 @@ const criar_um_usuario = async (req, res) => {
         message:"Não é permitido campos vazios, podes verficar [nome,email,senha,telefone,tipo]"
       }) 
     }
-    await cloudinary.uploader.upload(file.path,{allowed_formats:["jpeg","png","jpg"],folder:"cloudnaryDespachou"})
+    await cloudinary.uploader.upload(file.path,{allowed_formats:["jpeg","png","jpg"],folder:"cloudnary-despachou/profile"})
     .then(async (avatar)=>{
       const usuario=await create_usuario({
         nome,

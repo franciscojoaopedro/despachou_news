@@ -1,4 +1,3 @@
-const { Types,Schema } = require("mongoose")
 const cloudinary=require("../../../config/cloudinary.config")
 const { Imovel,buscar_imoveis,imoveis_do_usuario, detalhes_do_imovel } = require("../../models/model.imovel")
 
@@ -23,7 +22,7 @@ async  function publicar_um_imovel(req,res){
         }
         const upload = async (file) => {
             const result = await cloudinary.uploader.upload(file.path, {
-              folder: 'cloudnary-imoveis',
+              folder: 'cloudnary-despachou/imoveis',
               public_id: `${Date.now()}-${file.originalname}`,
               allowed_formats:["jpeg","png","jpg","webp","auto"]
             });
