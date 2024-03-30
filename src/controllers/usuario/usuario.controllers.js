@@ -68,4 +68,16 @@ const encontrar_todos_usuarios=async(req,res)=>{
        message:"não foi possivel buscar todos os usuarios" });
   }
 }
-module.exports = { criar_um_usuario,encontrar_todos_usuarios};
+const encontrar_um_usuario = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const usuario = await Usuario.findById(id, '-senha');
+    if (!usuario) {
+      return res.status(404).json({ message: 'Usuário não encontrado' });
+    }
+    return res.status(200).json({ message: 'Usuário encontrado', usuario });
+  } catch (error) {
+    return res.status(400).json({ message: 'Erro ao buscar o usuário', error: error.message });
+  }
+};
+module.exports = { criar_um_usuario,encontrar_todos_usuarios,encontrar_um_usuario};

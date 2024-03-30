@@ -25,7 +25,7 @@ const login = async (req, res) => {
             expiresIn: '1d',
         });
 
-        res.status(200).send({ token });
+        res.status(200).send({ token:token, _id:usuario._id});
     } catch (error) {
         console.error(error); // Log do erro para facilitar o debug
         res.status(500).send({ error: 'Erro ao processar a solicitação de login.' });
