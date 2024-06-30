@@ -2,19 +2,19 @@ const mongoose = require('mongoose');
 const favoriteSchema = new mongoose.Schema({
   usuarioID: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Usuario', // Substitua 'User' pelo nome do seu schema de usuário, se for diferente
+    ref: 'Usuario', 
     required: true,
   },
   imovelID: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Imovel', // Substitua 'Property' pelo nome do seu schema de imóvel, se for diferente
+    ref: 'Imovel', 
     required: true,
   },
   addedAt: {
     type: Date,
     default: Date.now,
   },
-},);
+},{timestamps:true});
 
 
 module.exports = favoriteSchema;

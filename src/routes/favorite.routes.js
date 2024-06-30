@@ -9,6 +9,6 @@ favorite_router.post('/add', addFavorite);
 favorite_router.get('/user/:usuarioID', listFavoritesByUser);
 
 // Rota para deletar um favorito
-favorite_router.delete('/destroy/:id',deleteFavorite);
+favorite_router.delete('/remove/:id',deleteFavorite);
 
 module.exports = favorite_router;

@@ -15,5 +15,5 @@ router_imovel.get("/:id/listar",listar_todos_imoveis_do_usuario)
 router_imovel.get("/detalhes/:id/imovel",mostrar_detalhes_do_imovel)
 router_imovel.get("/filtrar",filtra_imoveis)
 
-router_imovel.post("/publicar",upload.array("image",3),publicar_um_imovel)
+router_imovel.post("/publicar",upload.array("image",5),publicar_um_imovel)
 module.exports=router_imovel

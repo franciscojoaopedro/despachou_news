@@ -25,7 +25,7 @@ async function criar_imovel({tipo,titulo,descricao,endereco,referencia,
 
 async function buscar_imoveis(){
     try {     
-        const imoveis=await Imovel.find()
+        const imoveis=await Imovel.find().sort({ createdAt: 1 })
         .then( async(imoveis)=>{
             if(!imoveis){
                 return null||[]
@@ -67,13 +67,10 @@ async function  imoveis_do_usuario(id){
 async function detalhes_do_imovel(id){
     try {
         const imovel=await Imovel.findOne({_id:id})
-        .then( async (response)=>{
-            const detalhes=await response
-           return detalhes
-        })
-        .catch((error)=>{
-            return error
-        })
+        .populate('proprietario')
+        if (!imovel) {
+            return null; 
+        }
         return imovel
     } catch (error) {
         throw {

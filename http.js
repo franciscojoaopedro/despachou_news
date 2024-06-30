@@ -1,3 +1,4 @@
+
 const app = require("./app/app")
 const server = require('http').createServer(app);
 const io = require("socket.io")(server);
@@ -12,10 +13,13 @@ const session_router = require("./src/routes/session.router");
 const favorite_router = require("./src/routes/favorite.routes");
 const messagem_router = require("./src/routes/messagem.routes");
 const reserva_router = require("./src/routes/reserva.routes");
+const pedido_router = require("./src/routes/pedido.routes");
+
 connection_mongodb()
 
 
 app.get("/",async(req,res)=>{
+
   io.on("connection",async(socket)=>{
     console.log(`socket conectado: ${socket.id}`)
   })
@@ -32,6 +36,7 @@ app.use(`${VERSION}/session`,session_router)
 app.use(`${VERSION}/favorito/imovel`,favorite_router)
 app.use(`${VERSION}/messagem`,messagem_router)
 app.use(`${VERSION}/reserva`,reserva_router)
+app.use(`${VERSION}/pedido`,pedido_router)
 
 
 const PORT=process.env.PORT_SERVER || 7788

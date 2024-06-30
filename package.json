@@ -1,10 +1,10 @@
 {
-  "name": "despachou",
+  "name": "despachou_datadog",
   "version": "1.0.0",
   "description": "despachou sua solução completa para compra, venda e aluguel de imóveis",
   "main": "http.js",
   "scripts": {
-    "test": "nodemon ./http.js"
+    "dev": "nodemon ./http.js"
   },
   "author": "franciscojoaopedro",
   "license": "ISC",
@@ -13,6 +13,7 @@
     "body-parser": "^1.20.2",
     "cloudinary": "^2.0.3",
     "cors": "^2.8.5",
+    "dd-trace": "^5.10.0",
     "express": "^4.18.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.2.2",

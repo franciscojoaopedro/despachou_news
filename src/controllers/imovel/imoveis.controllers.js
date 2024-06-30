@@ -3,10 +3,10 @@ const { Imovel,buscar_imoveis,imoveis_do_usuario, detalhes_do_imovel } = require
 
 
 async  function publicar_um_imovel(req,res){
-    const {area,bairro,banheiros,
+    req.setTimeout(60000);
+    const {
     descricao,endereco,
-    proprietario,provincia,quartos,
-    referencia,tipo,titulo,vagasGaragem,
+    proprietario,tipo,titulo,
     valor}=req.body
     const file=req.files
     try {
@@ -15,73 +15,58 @@ async  function publicar_um_imovel(req,res){
                 message:"Não foi possivel publicar o imovel, porque não tem fotos"
             })
         }
-        if(!bairro){
-            return res.json({
-                message:"Não foi possivel publicar o imovel, porque os campos estão vazios , é necessarios todas informações  do imovel"
-            })
-        }
+       
         const upload = async (file) => {
             const result = await cloudinary.uploader.upload(file.path, {
               folder: 'cloudnary-despachou/imoveis',
               public_id: `${Date.now()}-${file.originalname}`,
-              allowed_formats:["jpeg","png","jpg","webp","auto"]
+              allowed_formats:["jpeg","png","jpg","webp","auto","mp4","mov"]
             });
             return result.secure_url;
           };
         const fotos=await Promise.all(req.files.map(file => upload(file)));
 
-        await Imovel.create({
-            area,bairro,banheiros,descricao,
-            endereco,fotos,proprietario,provincia,quartos,
-            referencia,tipo,titulo,vagasGaragem,valor
+        const imovel= await Imovel.create({
+            descricao,
+            endereco,fotos,proprietario,tipo,titulo,valor
         })
-        .then((imovel)=>{
-            return res.json({
-                statuCode:201,
-                message:"Imovel foi criado e publicado com sucesso",
-                imovel
-            })
-        })
-        .catch((error)=>{
-            throw error
-        })
-        return res.json({message:"imovel foi publicado com sucesso!",fotos})
+        // .then((imovel)=>{
+        //     return res.json({
+        //         message:"Imovel foi criado e publicado com sucesso",
+        //         imovel
+        //     })
+        // })
+       
+       
+        return res.json({message:"imovel foi publicado com sucesso!",imovel})
     } catch (error) {
         console.log({messageError:"não funciona",error})
     }
 }
-async function listar_todos_imoveis(req,res){
+async function listar_todos_imoveis(req, res) {
     try {
-    buscar_imoveis()
-     .then(async(response)=>{
-        const imoveis=await response
-        if(!imoveis){
-            return res.json({
-                statuCode:200,
-                message:"Nenhum imovel encontrado",
-                imoveis:imoveis
-            })
-        }
+        const { search_imoveis } = req.query;
+       const regex=new RegExp(search_imoveis,"i")
+
+        const imoveis = await Imovel.find({
+            $or:[
+                {endereco:{$regex:regex}},
+                {tipo:{$regex:regex}},
+                {titulo:{$regex:regex}},
+            ]
+        }).sort({ createdAt: -1 });
+
         return res.json({
-            statuCode:200,
-            message:"Todos os imoveis",
-            imoveis:imoveis
-        })
-     })
-     .catch((error)=>{
-        return res.json({
-            statuCode:200,
-            message:"Nenhum imovel encontrado",
-            imoveis:[],
-            message:error
-        })
-     })
-     
+            statuCode: 200,
+            message: "Imóveis encontrados",
+            imoveis: imoveis
+        });
+
     } catch (error) {
         return res.json({
-            message:"Não possivel listar os imoveis",
-            messageError:error
-        })
+            message: "Não foi possível listar os imóveis",
+            messageError: error
+        });
     }
 }
 async function listar_todos_imoveis_do_usuario(req,res){

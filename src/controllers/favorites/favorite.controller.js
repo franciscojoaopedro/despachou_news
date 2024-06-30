@@ -5,11 +5,16 @@ const Favorite = require("../../models/model.favorite");
 exports.addFavorite = async (req, res) => {
     try {
         const { usuarioID, imovelID } = req.body;
-        
+
+        // Verificar se o imóvel já está nos favoritos antes de adicionar
+        const existingFavorite = await Favorite.findOne({ usuarioID, imovelID });
+        if (existingFavorite) {
+            return res.status(404).json({ message: "Imóvel já está nos favoritos" });
+        }
+
         const newFavorite = await Favorite.create({ usuarioID, imovelID });
-        //const savedFavorite = await newFavorite;
         res.status(201).json({
-            message:"Um imovel adicionado aos favoritos",
+            message: "Um imovel adicionado aos favoritos",
             newFavorite
         });
     } catch (error) {
@@ -23,20 +28,33 @@ exports.listFavoritesByUser = async (req, res) => {
     try {
         const { usuarioID } = req.params;
         const favorites = await Favorite.find({ usuarioID })
-        .populate('imovelID');
-        res.status(200).json(favorites);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
+          .populate("ImovelID");
+    
+        return res.status(200).json(favorites);
+      } catch (error) {
+        return res.status(500).json({ message: error.message });
+      }
 };
 
 // Deletar um favorito
 exports.deleteFavorite = async (req, res) => {
     try {
         const { id } = req.params;
-        await Favorite.findByIdAndDelete(id);
-        res.status(204).send();
+        console.log(id)
+        const favorite = await Favorite.findOne({imovelID: {_id:id} });
+
+
+        res.json({favorite})
+        // if (!favorite) {
+        //     return res.status(404).json({ message: "Favorito não encontrado" });
+        // }
+
+        // // Remove o imóvel associado ao favorito
+        // const imovelID = favorite.imovelID;
+        // await Imovel.findOneAndDelete({ _id: imovelID });
+
+        
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.json({ message: error.message });
     }
 };
