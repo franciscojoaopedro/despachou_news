@@ -28,8 +28,7 @@ exports.listFavoritesByUser = async (req, res) => {
     try {
         const { usuarioID } = req.params;
         const favorites = await Favorite.find({ usuarioID })
-          .populate("ImovelID");
-    
+        .populate("imovelID");
         return res.status(200).json(favorites);
       } catch (error) {
         return res.status(500).json({ message: error.message });

@@ -23,6 +23,13 @@ const usuarioSchema = new mongoose.Schema({
   avatar: {
     type:String,
   },
+  online: {
+    type: Boolean,
+    default: false,
+  },
+  socketId: {
+    type: String,
+  },
 },{timestamps:true});
 
 
