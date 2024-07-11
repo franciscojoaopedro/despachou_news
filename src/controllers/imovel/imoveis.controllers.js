@@ -45,30 +45,58 @@ async  function publicar_um_imovel(req,res){
 }
 async function listar_todos_imoveis(req, res) {
     try {
-        const { search_imoveis } = req.query;
-       const regex=new RegExp(search_imoveis,"i")
+        const { page, tipo, endereco, titulo } = req.query;
 
+        // Definindo regex para os filtros (se fornecidos)
+        const regexTipo = tipo ? new RegExp(tipo, "i") : /.*/;
+        const regexEndereco = endereco ? new RegExp(endereco, "i") : /.*/;
+        const regexTitulo = titulo ? new RegExp(titulo, "i") : /.*/;
+
+        // Configurando paginação
+        const pageNumber = parseInt(page) || 1;
+        const pageSize = 10; // Quantidade de imóveis por página
+        const skip = (pageNumber - 1) * pageSize;
+
+        // Consulta ao banco de dados com filtros, ordenação, paginação
         const imoveis = await Imovel.find({
-            $or:[
-                {endereco:{$regex:regex}},
-                {tipo:{$regex:regex}},
-                {titulo:{$regex:regex}},
-            ]
-        }).sort({ createdAt: -1 });
+            $or: [
+                { endereco: { $regex: regexEndereco } },
+                { tipo: { $regex: regexTipo } },
+                { titulo: { $regex: regexTitulo } },
+            ],
+        })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(pageSize);
 
+        // Contando o total de imóveis que correspondem aos filtros
+        const totalImoveis = await Imovel.countDocuments({
+            $or: [
+                { endereco: { $regex: regexEndereco } },
+                { tipo: { $regex: regexTipo } },
+                { titulo: { $regex: regexTitulo } },
+            ],
+        });
+
+        // Retornando a resposta com os imóveis, total de páginas e página atual
         return res.json({
-            statuCode: 200,
+            statusCode: 200,
             message: "Imóveis encontrados",
-            imoveis: imoveis
+            imoveis: imoveis,
+            totalPaginas: Math.ceil(totalImoveis / pageSize),
+            paginaAtual: pageNumber,
         });
 
     } catch (error) {
-        return res.json({
+        // Respondendo com status 500 em caso de erro
+        return res.status(500).json({
             message: "Não foi possível listar os imóveis",
-            messageError: error
+            messageError: error.message,
         });
     }
 }
+
+
 async function listar_todos_imoveis_do_usuario(req,res){
     try {
         const {id}=req.params
