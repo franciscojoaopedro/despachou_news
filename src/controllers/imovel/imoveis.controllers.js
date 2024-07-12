@@ -1,5 +1,5 @@
 const cloudinary=require("../../../config/cloudinary.config")
-const { Imovel,buscar_imoveis,imoveis_do_usuario, detalhes_do_imovel } = require("../../models/model.imovel")
+const { Imovel,imoveis_do_usuario, detalhes_do_imovel } = require("../../models/model.imovel")
 
 
 async  function publicar_um_imovel(req,res){
