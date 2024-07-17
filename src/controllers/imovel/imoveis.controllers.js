@@ -44,37 +44,83 @@ async  function publicar_um_imovel(req,res){
     }
 }
 async function listar_todos_imoveis(req, res) {
+    // try {
+    //     const { page, tipo, endereco, titulo } = req.query;
+
+    //     // Definindo regex para os filtros (se fornecidos)
+    //     const regexTipo = tipo ? new RegExp(tipo, "i") : /.*/;
+    //     const regexEndereco = endereco ? new RegExp(endereco, "i") : /.*/;
+    //     const regexTitulo = titulo ? new RegExp(titulo, "i") : /.*/;
+
+    //     // Configurando paginação
+    //     const pageNumber = parseInt(page) || 1;
+    //     const pageSize = 10; // Quantidade de imóveis por página
+    //     const skip = (pageNumber - 1) * pageSize;
+
+    //     // Consulta ao banco de dados com filtros, ordenação, paginação
+    //     const imoveis = await Imovel.find({
+    //         $or: [
+    //             { endereco: { $regex: regexEndereco } },
+    //             { tipo: { $regex: regexTipo } },
+    //             { titulo: { $regex: regexTitulo } },
+    //         ],
+    //     })
+    //     .sort({ createdAt: -1 })
+    //     .skip(skip)
+    //     .limit(pageSize);
+
+    //     // Contando o total de imóveis que correspondem aos filtros
+    //     const totalImoveis = await Imovel.countDocuments({
+    //         $or: [
+    //             { endereco: { $regex: regexEndereco } },
+    //             { tipo: { $regex: regexTipo } },
+    //             { titulo: { $regex: regexTitulo } },
+    //         ],
+    //     });
+
+    //     // Retornando a resposta com os imóveis, total de páginas e página atual
+    //     return res.json({
+    //         statusCode: 200,
+    //         message: "Imóveis encontrados",
+    //         imoveis: imoveis,
+    //         totalPaginas: Math.ceil(totalImoveis / pageSize),
+    //         paginaAtual: pageNumber,
+    //     });
+
+    // } catch (error) {
+    //     // Respondendo com status 500 em caso de erro
+    //     return res.status(500).json({
+    //         message: "Não foi possível listar os imóveis",
+    //         messageError: error.message,
+    //     });
+    // }
+
     try {
-        const { page, tipo, endereco, titulo } = req.query;
+        const {  search_imoveis} = req.query;
 
         // Definindo regex para os filtros (se fornecidos)
-        const regexTipo = tipo ? new RegExp(tipo, "i") : /.*/;
-        const regexEndereco = endereco ? new RegExp(endereco, "i") : /.*/;
-        const regexTitulo = titulo ? new RegExp(titulo, "i") : /.*/;
-
+        const pesquisa = search_imoveis ? new RegExp(search_imoveis, "i") :"";
+       
         // Configurando paginação
-        const pageNumber = parseInt(page) || 1;
-        const pageSize = 10; // Quantidade de imóveis por página
-        const skip = (pageNumber - 1) * pageSize;
+       
 
         // Consulta ao banco de dados com filtros, ordenação, paginação
         const imoveis = await Imovel.find({
             $or: [
-                { endereco: { $regex: regexEndereco } },
-                { tipo: { $regex: regexTipo } },
-                { titulo: { $regex: regexTitulo } },
+                { endereco: { $regex: pesquisa } },
+                { tipo: { $regex: pesquisa } },
+                { titulo: { $regex: pesquisa } },
             ],
         })
         .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(pageSize);
+        
 
         // Contando o total de imóveis que correspondem aos filtros
         const totalImoveis = await Imovel.countDocuments({
             $or: [
-                { endereco: { $regex: regexEndereco } },
-                { tipo: { $regex: regexTipo } },
-                { titulo: { $regex: regexTitulo } },
+                { endereco: { $regex: pesquisa } },
+                { tipo: { $regex: pesquisa } },
+                { titulo: { $regex: pesquisa } },
             ],
         });
 
@@ -83,8 +129,8 @@ async function listar_todos_imoveis(req, res) {
             statusCode: 200,
             message: "Imóveis encontrados",
             imoveis: imoveis,
-            totalPaginas: Math.ceil(totalImoveis / pageSize),
-            paginaAtual: pageNumber,
+            //totalPaginas: Math.ceil(totalImoveis / pageSize),
+            //paginaAtual: pageNumber,
         });
 
     } catch (error) {
@@ -94,6 +140,7 @@ async function listar_todos_imoveis(req, res) {
             messageError: error.message,
         });
     }
+
 }
 
 
